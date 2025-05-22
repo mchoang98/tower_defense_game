@@ -91,22 +91,38 @@ class Bullet:
 
 
 class Tower:
-    def __init__(self, x, y, image):
+    MAX_LEVEL = 5
+
+    def __init__(self, x, y, image, level=1):
         self.x = x
         self.y = y
-        self.image = image
+        self.level = level
         self.range = 120
-        self.fire_rate = 60  # càng nhỏ bắn càng nhanh
+        self.fire_rate = 60
         self.timer = 0
-        self.level = 1
         self.damage = 25
+        self.image = image
 
     def upgrade(self):
+        if self.level >= Tower.MAX_LEVEL:
+            return False  # Không thể nâng cấp nữa
+
         self.level += 1
         self.range += 15
         self.fire_rate = max(20, self.fire_rate - 5)
         self.damage += 10
+        self.load_image()
+        return True
 
+    def load_image(self):
+        try:
+            image_path = f"assets/tower_{self.level}.png"
+            image = pygame.image.load(image_path).convert_alpha()
+            self.image = pygame.transform.scale(image, (40, 40))
+        except pygame.error:
+            print(f"Không thể tải ảnh {image_path}")
+
+    
     def in_range(self, enemy):
         return distance((self.x, self.y), (enemy.x, enemy.y)) <= self.range
 
@@ -193,6 +209,8 @@ class Game:
         if self.message:
             self.screen.blit(self.font.render(self.message, True, RED), (WIDTH // 2 - 100, HEIGHT - 40))
 
+    
+
     def spawn_wave(self):
         self.wave += 1
         for i in range(5 + self.wave):
@@ -218,7 +236,7 @@ class Game:
                         else:
                             self.message = "Not enough gold to upgrade!"
                             self.message_timer = pygame.time.get_ticks()
-                        return
+                        return True
 
             if event.type == pygame.QUIT:
                 return False
@@ -239,10 +257,20 @@ class Game:
                             else:
                                 self.message = "Not enough gold to unlock!"
                                 self.message_timer = pygame.time.get_ticks()
-                        elif pos in self.unlocked_positions and self.gold >= TOWER_COST:
-                            self.towers.append(Tower(*pos, self.tower_image))
-                            self.gold -= TOWER_COST
-                        break
+                        elif pos in self.unlocked_positions:
+                            # already unlocked
+                            if any(tower.x == pos[0] and tower.y == pos[1] for tower in self.towers):
+                                self.message = "Tower already exists here!"
+                                self.message_timer = pygame.time.get_ticks()
+                            elif self.gold >= TOWER_COST:
+                                tower = Tower(pos[0], pos[1], self.tower_image)
+                                self.towers.append(tower)
+                                self.gold -= TOWER_COST
+                            else:
+                                self.message = "Not enough gold to build!"
+                                self.message_timer = pygame.time.get_ticks() 
+                        break   
+
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and self.waiting_for_wave:
