@@ -85,10 +85,10 @@ pip install pygame
 ## Cách chạy game
 
 ```bash
-python ten_file_game.py
+python main.py
 ```
 
-> Hãy thay `ten_file_game.py` bằng tên tệp game thực tế của bạn.
+> Hãy thay `main.py` bằng tên tệp game thực tế của bạn.
 
 ---
 
@@ -96,7 +96,7 @@ python ten_file_game.py
 
 ```
 📁 project/
- ┣ 📄 ten_file_game.py
+ ┣ 📄 main.py
  ┣ 📁 assets/
  ┃ ┣ 🖼️ enemy.png
  ┃ ┣ 🖼️ tower.png
