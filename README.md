@@ -3,6 +3,7 @@
 Đây là một game **Thủ Thành** được phát triển bằng **Python** và thư viện **Pygame**, theo mô hình hướng đối tượng. Người chơi xây dựng các tháp để tiêu diệt kẻ địch trước khi chúng đến được căn cứ.
 
 ---
+![image](https://github.com/user-attachments/assets/c064d86c-5c2e-46c9-af42-1b48495d5e5e)
 
 ## Mục tiêu
 
